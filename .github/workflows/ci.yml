@@ -1,0 +1,96 @@
+name: CI/CD Pipeline (No Testing)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-only:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    # Skip testing - Direct build only
+    - name: Build for Linux (No Testing)
+      run: |
+        echo "Building without tests..."
+        GOOS=linux GOARCH=amd64 go build -o ai-server-linux-amd64 .
+        
+    - name: Build for Windows (No Testing)
+      run: |
+        GOOS=windows GOARCH=amd64 go build -o ai-server-windows-amd64.exe .
+        
+    - name: Build for macOS (No Testing)
+      run: |
+        GOOS=darwin GOARCH=amd64 go build -o ai-server-darwin-amd64 .
+    
+    - name: Create Release Assets
+      run: |
+        mkdir -p release
+        mv ai-server-* release/
+        echo "Build completed without testing phase"
+        
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only on main branch pushes
+      with:
+        name: ai-server-builds-${{ github.run_number }}
+        path: release/
+        retention-days: 7  # Reduced from 30 to 7 days
+        if-no-files-found: error
+
+  docker-build-only:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Create Dockerfile (No Testing)
+        run: |
+          cat > Dockerfile << 'EOF'
+          # Build stage - Skip testing phase
+          FROM golang:1.21-alpine AS builder
+
+          WORKDIR /app
+          COPY go.mod go.sum ./
+          RUN go mod download
+
+          COPY . .
+          # Build without running tests
+          RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ai-server .
+
+          # Final stage
+          FROM alpine:latest
+          RUN apk --no-cache add ca-certificates
+          WORKDIR /root/
+
+          COPY --from=builder /app/ai-server .
+
+          EXPOSE 8081
+          CMD ["./ai-server"]
+          EOF
+      - name: Build Docker image (No Testing)
+        run: |
+          echo "Building Docker image without tests..."
+          docker build -t ai-server:latest .
+          docker tag ai-server:latest ai-server:${{ github.sha }}
+      - name: Save Docker image to tar
+        run: docker save ai-server:latest -o ai-server.tar
+      - name: Upload Docker Image (No Test Build)
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only on main branch pushes
+        with:
+          name: ai-server-docker-${{ github.run_number }}
+          path: ai-server.tar
+          retention-days: 7  # Reduced from 30 to 7 days
+          if-no-files-found: error

@@ -1,0 +1,618 @@
+openapi: 3.0.3
+info:
+  title: AI Service API
+  description: |
+    AI Service API provides various artificial intelligence capabilities including:
+    - Chat completions
+    - Text embeddings
+    - Text classification
+    - Text summarization
+    - Sentiment analysis
+    
+    This API leverages a local LLM server (DistilGPT-2) to provide AI services.
+  version: 1.0.0
+  contact:
+    name: AI Service Support
+    url: https://github.com/Ammar0144/ai
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8081
+    description: Development server
+  - url: http://ammar-alashmori.com:8081
+    description: Production server
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns the health status of the AI service
+      operationId: getHealth
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                timestamp: "2025-09-20T10:30:00Z"
+                version: "1.0.0"
+
+  /ai/message:
+    post:
+      tags:
+        - AI Processing
+      summary: Process a message
+      description: Send a message to the AI and get a response
+      operationId: processMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+            example:
+              message: "Hello, how are you today?"
+              user_id: "user123"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                response: "Hello! I'm doing well, thank you for asking. How can I help you today?"
+                user_id: "user123"
+                timestamp: "2025-09-20T10:30:00Z"
+                model: "distilgpt2"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai/chat/completions:
+    post:
+      tags:
+        - AI Processing
+      summary: Chat completion
+      description: Generate a chat completion based on conversation history
+      operationId: chatCompletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+            example:
+              messages:
+                - role: "user"
+                  content: "What is artificial intelligence?"
+                - role: "assistant"
+                  content: "Artificial intelligence is a field of computer science..."
+                - role: "user"
+                  content: "Can you give me some examples?"
+              max_tokens: 150
+              temperature: 0.7
+              user_id: "user123"
+      responses:
+        '200':
+          description: Successful chat completion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+              example:
+                response: "Sure! Some examples of AI include machine learning algorithms, natural language processing systems, computer vision, and autonomous vehicles."
+                user_id: "user123"
+                timestamp: "2025-09-20T10:30:00Z"
+                model: "distilgpt2"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai/embeddings:
+    post:
+      tags:
+        - AI Processing
+      summary: Generate text embeddings
+      description: Generate vector embeddings for the given text
+      operationId: generateEmbeddings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmbeddingsRequest'
+            example:
+              text: "This is a sample text for embedding generation"
+              user_id: "user123"
+      responses:
+        '200':
+          description: Successful embeddings generation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingsResponse'
+              example:
+                embeddings: "Embeddings for: This is a sample text for embedding generation (placeholder)"
+                user_id: "user123"
+                timestamp: "2025-09-20T10:30:00Z"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai/classifications:
+    post:
+      tags:
+        - AI Processing
+      summary: Classify text
+      description: Classify text into predefined categories
+      operationId: classifyText
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassificationRequest'
+            example:
+              text: "This product is absolutely amazing! I love it so much!"
+              categories: ["positive", "negative", "neutral"]
+              user_id: "user123"
+      responses:
+        '200':
+          description: Successful text classification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+              example:
+                classification: "positive"
+                user_id: "user123"
+                timestamp: "2025-09-20T10:30:00Z"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai/summarization:
+    post:
+      tags:
+        - AI Processing
+      summary: Summarize text
+      description: Generate a summary of the provided text
+      operationId: summarizeText
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SummarizationRequest'
+            example:
+              text: "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of 'intelligent agents': any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term 'artificial intelligence' is often used to describe machines that mimic 'cognitive' functions that humans associate with the human mind, such as 'learning' and 'problem solving'."
+              max_length: 100
+              user_id: "user123"
+      responses:
+        '200':
+          description: Successful text summarization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummarizationResponse'
+              example:
+                summary: "Artificial intelligence (AI) refers to intelligence demonstrated by machines that can perceive their environment and take actions to achieve goals, often mimicking cognitive functions like learning and problem solving."
+                user_id: "user123"
+                timestamp: "2025-09-20T10:30:00Z"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ai/sentiment:
+    post:
+      tags:
+        - AI Processing
+      summary: Analyze sentiment
+      description: Analyze the sentiment of the provided text
+      operationId: analyzeSentiment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SentimentRequest'
+            example:
+              text: "I absolutely love this new feature! It's fantastic and works perfectly."
+              user_id: "user123"
+      responses:
+        '200':
+          description: Successful sentiment analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SentimentResponse'
+              example:
+                sentiment: "positive"
+                user_id: "user123"
+                timestamp: "2025-09-20T10:30:00Z"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/message:
+    post:
+      tags:
+        - Legacy
+      summary: Legacy message endpoint
+      description: Legacy endpoint for processing messages (backward compatibility)
+      operationId: processMessageLegacy
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    MessageRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: The message to process
+          example: "Hello, how are you?"
+        user_id:
+          type: string
+          description: Optional user identifier
+          example: "user123"
+
+    MessageResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: The AI-generated response
+          example: "Hello! I'm doing well, thank you for asking."
+        user_id:
+          type: string
+          description: User identifier (if provided)
+          example: "user123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+          example: "2025-09-20T10:30:00Z"
+        model:
+          type: string
+          description: The AI model used
+          example: "distilgpt2"
+
+    ChatMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system]
+          description: The role of the message sender
+          example: "user"
+        content:
+          type: string
+          description: The message content
+          example: "What is artificial intelligence?"
+
+    ChatCompletionRequest:
+      type: object
+      required:
+        - messages
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+          description: Array of chat messages
+        max_tokens:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 150
+          description: Maximum number of tokens to generate
+          example: 150
+        temperature:
+          type: number
+          minimum: 0.0
+          maximum: 2.0
+          default: 0.7
+          description: Controls randomness in generation
+          example: 0.7
+        user_id:
+          type: string
+          description: Optional user identifier
+          example: "user123"
+
+    ChatCompletionResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: The AI-generated chat response
+          example: "AI is a field of computer science focused on creating intelligent machines."
+        user_id:
+          type: string
+          description: User identifier (if provided)
+          example: "user123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+          example: "2025-09-20T10:30:00Z"
+        model:
+          type: string
+          description: The AI model used
+          example: "distilgpt2"
+
+    EmbeddingsRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: Text to generate embeddings for
+          example: "This is sample text for embedding"
+        user_id:
+          type: string
+          description: Optional user identifier
+          example: "user123"
+
+    EmbeddingsResponse:
+      type: object
+      properties:
+        embeddings:
+          type: string
+          description: Generated embeddings (placeholder implementation)
+          example: "Embeddings for: sample text (placeholder)"
+        user_id:
+          type: string
+          description: User identifier (if provided)
+          example: "user123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+          example: "2025-09-20T10:30:00Z"
+
+    ClassificationRequest:
+      type: object
+      required:
+        - text
+        - categories
+      properties:
+        text:
+          type: string
+          description: Text to classify
+          example: "This product is amazing!"
+        categories:
+          type: array
+          items:
+            type: string
+          description: List of possible categories
+          example: ["positive", "negative", "neutral"]
+        user_id:
+          type: string
+          description: Optional user identifier
+          example: "user123"
+
+    ClassificationResponse:
+      type: object
+      properties:
+        classification:
+          type: string
+          description: The predicted classification
+          example: "positive"
+        user_id:
+          type: string
+          description: User identifier (if provided)
+          example: "user123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+          example: "2025-09-20T10:30:00Z"
+
+    SummarizationRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: Text to summarize
+          example: "Long text that needs to be summarized..."
+        max_length:
+          type: integer
+          minimum: 10
+          maximum: 500
+          default: 100
+          description: Maximum length of the summary
+          example: 100
+        user_id:
+          type: string
+          description: Optional user identifier
+          example: "user123"
+
+    SummarizationResponse:
+      type: object
+      properties:
+        summary:
+          type: string
+          description: Generated summary
+          example: "This is a concise summary of the input text."
+        user_id:
+          type: string
+          description: User identifier (if provided)
+          example: "user123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+          example: "2025-09-20T10:30:00Z"
+
+    SentimentRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: Text to analyze sentiment for
+          example: "I love this product!"
+        user_id:
+          type: string
+          description: Optional user identifier
+          example: "user123"
+
+    SentimentResponse:
+      type: object
+      properties:
+        sentiment:
+          type: string
+          enum: [positive, negative, neutral]
+          description: Detected sentiment
+          example: "positive"
+        user_id:
+          type: string
+          description: User identifier (if provided)
+          example: "user123"
+        timestamp:
+          type: string
+          format: date-time
+          description: Response timestamp
+          example: "2025-09-20T10:30:00Z"
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Service health status
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          description: Health check timestamp
+          example: "2025-09-20T10:30:00Z"
+        version:
+          type: string
+          description: Service version
+          example: "1.0.0"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "Bad Request"
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Message cannot be empty"
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: AI Processing
+    description: Core AI processing endpoints
+  - name: Legacy
+    description: Legacy endpoints for backward compatibility
+
+externalDocs:
+  description: Find out more about this AI Service
+  url: https://github.com/Ammar0144/ai

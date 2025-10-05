@@ -50,159 +50,123 @@
             color: #666;
         }
         .example {
-            background: #f1f3f4;
-            border-left: 4px solid #4285f4;
+            background: #2d2d2d;
+            color: #f8f8f2;
             padding: 1rem;
-            margin: 1rem 0;
             border-radius: 4px;
-        }
-        .example pre {
-            margin: 0;
             overflow-x: auto;
         }
-        .swagger-link {
-            background: #17a2b8;
-            color: white;
-            padding: 12px 24px;
+        .section {
+            margin: 2rem 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        a {
+            color: #667eea;
             text-decoration: none;
-            border-radius: 6px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .badge {
             display: inline-block;
-            margin-top: 1rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin: 5px 5px 5px 0;
         }
-        .swagger-link:hover {
-            background: #138496;
-            color: white;
-            text-decoration: none;
-        }
-        .nav {
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-        .nav a {
-            color: #495057;
-            text-decoration: none;
-            margin-right: 2rem;
-            font-weight: 500;
-        }
-        .nav a:hover {
-            color: #007bff;
-        }
-        .tag {
-            background: #6f42c1;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75em;
-            margin-left: 10px;
+        .badge-primary { background: #007bff; color: white; }
+        .badge-success { background: #28a745; color: white; }
+        .badge-warning { background: #ffc107; color: #333; }
+        .rate-limit {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🤖 AI Service API</h1>
-        <p>Comprehensive AI capabilities powered by DistilGPT-2 with advanced rate limiting, CORS support, and robust error handling</p>
-        <a href="/swagger/" class="swagger-link">🚀 Interactive Swagger UI</a>
+        <p>Version 1.0.0 | MIT License</p>
+        <p>A production-ready AI gateway with advanced rate limiting and security</p>
     </div>
 
-    <div class="nav">
-        <a href="#security">Security</a>
-        <a href="#health">Health</a>
-        <a href="#processing">AI Processing</a>
-        <a href="#legacy">Legacy</a>
-        <a href="#examples">Examples</a>
+    <div class="section">
+        <h2>📖 Overview</h2>
+        <p>
+            The AI Service API provides a secure gateway to AI capabilities powered by DistilGPT-2. 
+            Built with Go for high performance, featuring comprehensive rate limiting, CORS support, 
+            and production-ready error handling.
+        </p>
+        
+        <h3>🔑 Key Features</h3>
+        <ul>
+            <li>⚡ <strong>High Performance</strong>: Go-based microservices architecture</li>
+            <li>🔒 <strong>Advanced Rate Limiting</strong>: IP-based token bucket algorithm</li>
+            <li>🌐 <strong>CORS Enabled</strong>: Configurable cross-origin support</li>
+            <li>📚 <strong>Swagger UI</strong>: Interactive API documentation</li>
+            <li>🐳 <strong>Docker Ready</strong>: Containerized deployment</li>
+            <li>🔗 <strong>Microservices</strong>: Gateway pattern with LLM backend</li>
+        </ul>
+
+        <h3>🚦 Rate Limits</h3>
+        <div class="rate-limit">
+            <strong>Per IP Address Per Minute:</strong>
+            <ul>
+                <li>AI Processing Endpoints: <strong>30 requests/min</strong></li>
+                <li>Health Check: <strong>200 requests/min</strong></li>
+                <li>Model Info: <strong>100 requests/min</strong></li>
+                <li>Root Info: <strong>100 requests/min</strong></li>
+            </ul>
+        </div>
     </div>
 
-    <section id="security">
-        <h2>🔒 Security & Rate Limiting</h2>
-        
-        <div class="endpoint">
-            <h3>🛡️ Security Features</h3>
-            <p class="description">The AI Service includes comprehensive security and performance protections:</p>
-            <div class="example">
-                <strong>Security Features:</strong>
-                <ul>
-                    <li><strong>IP-based Rate Limiting:</strong> Prevents abuse and ensures fair usage</li>
-                    <li><strong>CORS Support:</strong> Configurable cross-origin resource sharing</li>
-                    <li><strong>Proxy Header Support:</strong> Handles X-Real-IP and X-Forwarded-For headers</li>
-                    <li><strong>Automatic Cleanup:</strong> Prevents memory leaks with regular IP cache cleanup</li>
-                </ul>
-            </div>
-        </div>
+    <div class="section">
+        <h2>🔗 Documentation Links</h2>
+        <ul>
+            <li><a href="/swagger/index.html" target="_blank">📘 Interactive Swagger UI</a> - Test endpoints live</li>
+            <li><a href="/swagger/doc.json" target="_blank">📄 OpenAPI Specification (JSON)</a></li>
+            <li><a href="/" target="_blank">ℹ️ Service Information</a></li>
+            <li><a href="https://github.com/Ammar0144/ai" target="_blank">💻 GitHub Repository</a></li>
+            <li><a href="https://github.com/Ammar0144/llm" target="_blank">🧠 LLM Backend Repository</a></li>
+        </ul>
+    </div>
 
-        <div class="endpoint">
-            <h3>⏱️ Rate Limits per IP Address</h3>
-            <p class="description">Different endpoints have different rate limits to balance performance and availability:</p>
-            <div class="example">
-                <strong>Rate Limits (per minute):</strong>
-                <ul>
-                    <li><strong>AI Processing Endpoints:</strong> 30 requests/minute
-                        <ul>
-                            <li>/ai/message, /ai/chat/completions, /ai/embeddings</li>
-                            <li>/ai/classifications, /ai/summarization, /ai/sentiment</li>
-                            <li>/ai/ask</li>
-                        </ul>
-                    </li>
-                    <li><strong>Health Check:</strong> 200 requests/minute
-                        <ul><li>/health</li></ul>
-                    </li>
-                    <li><strong>Model Information:</strong> 100 requests/minute
-                        <ul><li>/ai/model-info</li></ul>
-                    </li>
-                </ul>
-                <strong>Rate Limit Exceeded Response (429):</strong>
-                <pre>{
-  "error": "Rate limit exceeded",
-  "code": 429,
-  "message": "Too many requests. Please try again later."
-}</pre>
-            </div>
-        </div>
-    </section>
-
-    <section id="health">
-        <h2>🏥 Health Endpoints</h2>
-        
-        <div class="endpoint">
-            <h3>
-                <span class="method get">GET</span>
-                <span class="path">/health</span>
-                <span class="tag">Health</span>
-            </h3>
-            <p class="description">Returns the health status of the AI service</p>
-            <div class="example">
-                <strong>Response:</strong>
-                <pre>{
-  "status": "healthy",
-  "timestamp": "2025-09-20T10:30:00Z",
-  "version": "1.0.0"
-}</pre>
-            </div>
-        </div>
-    </section>
-
-    <section id="processing">
-        <h2>🧠 AI Processing Endpoints</h2>
+    <div class="section">
+        <h2>📡 API Endpoints</h2>
 
         <div class="endpoint">
             <h3>
                 <span class="method post">POST</span>
                 <span class="path">/ai/chat/completions</span>
-                <span class="tag">AI Processing</span>
+                <span class="badge badge-warning">Rate: 30/min</span>
             </h3>
-            <p class="description">Generate a chat completion based on conversation history</p>
+            <p class="description">Generate chat completions based on conversation history.</p>
+            <h4>Request Body:</h4>
             <div class="example">
-                <strong>Request:</strong>
                 <pre>{
   "messages": [
-    {"role": "user", "content": "What is AI?"},
-    {"role": "assistant", "content": "AI is..."},
-    {"role": "user", "content": "Give me examples"}
+    {"role": "user", "content": "Hello, how are you?"}
   ],
   "max_tokens": 150,
   "temperature": 0.7,
-  "user_id": "user123"
+  "user_id": "optional-user-id"
+}</pre>
+            </div>
+            <h4>Response:</h4>
+            <div class="example">
+                <pre>{
+  "response": "Hello! I'm doing well...",
+  "user_id": "optional-user-id",
+  "timestamp": "2025-10-05T04:00:00Z",
+  "model": "distilgpt2"
 }</pre>
             </div>
         </div>
@@ -210,15 +174,26 @@
         <div class="endpoint">
             <h3>
                 <span class="method post">POST</span>
-                <span class="path">/ai/embeddings</span>
-                <span class="tag">AI Processing</span>
+                <span class="path">/ai/complete</span>
+                <span class="badge badge-warning">Rate: 30/min</span>
             </h3>
-            <p class="description">Generate vector embeddings for the given text</p>
+            <p class="description">Complete text based on a given prompt.</p>
+            <h4>Request Body:</h4>
             <div class="example">
-                <strong>Request:</strong>
                 <pre>{
-  "text": "This is sample text for embedding",
-  "user_id": "user123"
+  "prompt": "The future of AI is",
+  "max_tokens": 100,
+  "temperature": 0.7,
+  "user_id": "optional-user-id"
+}</pre>
+            </div>
+            <h4>Response:</h4>
+            <div class="example">
+                <pre>{
+  "response": "The future of AI is bright and full of possibilities...",
+  "user_id": "optional-user-id",
+  "timestamp": "2025-10-05T04:00:00Z",
+  "model": "distilgpt2"
 }</pre>
             </div>
         </div>
@@ -226,115 +201,206 @@
         <div class="endpoint">
             <h3>
                 <span class="method post">POST</span>
-                <span class="path">/ai/classifications</span>
-                <span class="tag">AI Processing</span>
+                <span class="path">/ai/generate</span>
+                <span class="badge badge-warning">Rate: 30/min</span>
             </h3>
-            <p class="description">Classify text into predefined categories</p>
+            <p class="description">Generate creative text content based on a prompt.</p>
+            <h4>Request Body:</h4>
             <div class="example">
-                <strong>Request:</strong>
                 <pre>{
-  "text": "This product is amazing!",
-  "categories": ["positive", "negative", "neutral"],
-  "user_id": "user123"
+  "prompt": "Once upon a time",
+  "max_tokens": 100,
+  "temperature": 0.8,
+  "user_id": "optional-user-id"
+}</pre>
+            </div>
+            <h4>Response:</h4>
+            <div class="example">
+                <pre>{
+  "response": "Once upon a time, there was a great adventure...",
+  "user_id": "optional-user-id",
+  "timestamp": "2025-10-05T04:00:00Z",
+  "model": "distilgpt2"
 }</pre>
             </div>
         </div>
 
         <div class="endpoint">
             <h3>
-                <span class="method post">POST</span>
-                <span class="path">/ai/summarization</span>
-                <span class="tag">AI Processing</span>
+                <span class="method get">GET</span>
+                <span class="path">/ai/model-info</span>
+                <span class="badge badge-success">Rate: 100/min</span>
             </h3>
-            <p class="description">Generate a summary of the provided text</p>
+            <p class="description">Get detailed information about the current AI model.</p>
+            <h4>Response:</h4>
             <div class="example">
-                <strong>Request:</strong>
                 <pre>{
-  "text": "Long text that needs to be summarized...",
-  "max_length": 100,
-  "user_id": "user123"
+  "model_name": "distilgpt2",
+  "model_type": "GPT-2",
+  "model_size": "82M parameters",
+  "description": "DistilGPT-2 optimized for text generation...",
+  "optimized_for": [
+    "text_generation",
+    "text_completion",
+    "chat_conversations"
+  ],
+  "supported_endpoints": [
+    "/generate - Text generation",
+    "/complete - Text completion",
+    "/chat/completions - Chat conversations"
+  ]
 }</pre>
             </div>
         </div>
 
         <div class="endpoint">
             <h3>
-                <span class="method post">POST</span>
-                <span class="path">/ai/sentiment</span>
-                <span class="tag">AI Processing</span>
+                <span class="method get">GET</span>
+                <span class="path">/health</span>
+                <span class="badge badge-primary">Rate: 200/min</span>
             </h3>
-            <p class="description">Analyze the sentiment of the provided text</p>
+            <p class="description">Check the health status of the AI service.</p>
+            <h4>Response:</h4>
             <div class="example">
-                <strong>Request:</strong>
                 <pre>{
-  "text": "I love this product!",
-  "user_id": "user123"
+  "status": "healthy",
+  "timestamp": "2025-10-05T04:00:00Z",
+  "version": "1.0.0"
 }</pre>
             </div>
         </div>
-    </section>
 
-    <section id="legacy">
-        <h2>🔄 Legacy Endpoints</h2>
+        <div class="endpoint">
+            <h3>
+                <span class="method get">GET</span>
+                <span class="path">/</span>
+                <span class="badge badge-success">Rate: 100/min</span>
+            </h3>
+            <p class="description">Get service information and available endpoints.</p>
+            <h4>Response:</h4>
+            <div class="example">
+                <pre>{
+  "service": "AI Service API",
+  "version": "1.0.0",
+  "documentation": {
+    "swagger_ui": "/swagger/",
+    "docs": "/docs",
+    "openapi_spec": "/swagger/doc.json"
+  },
+  "endpoints": {
+    "health": "/health",
+    "chat_completions": "/ai/chat/completions",
+    "complete": "/ai/complete",
+    "generate": "/ai/generate",
+    "model_info": "/ai/model-info"
+  }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>�� Example Usage</h2>
         
-        <div class="endpoint">
-            <h3>
-                <span class="method post">POST</span>
-                <span class="path">/api/message</span>
-                <span class="tag">Legacy</span>
-            </h3>
-            <p class="description">Legacy endpoint for processing messages (backward compatibility)</p>
-            <div class="example">
-                <strong>Request:</strong>
-                <pre>{
-  "message": "Hello, how are you?",
-  "user_id": "user123"
-}</pre>
-            </div>
-        </div>
-    </section>
-
-    <section id="examples">
-        <h2>🎯 Quick Test Examples</h2>
-        
+        <h3>Chat Completion</h3>
         <div class="example">
-            <strong>Test Health Check:</strong>
-            <pre>curl http://localhost:8081/health</pre>
-        </div>
-
-        <div class="example">
-            <strong>Test Chat Completion:</strong>
             <pre>curl -X POST "http://localhost:8081/ai/chat/completions" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "messages": [{"role": "user", "content": "What is AI?"}],
-       "max_tokens": 100
-     }'</pre>
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [{"role": "user", "content": "Hello!"}],
+    "temperature": 0.7
+  }'</pre>
         </div>
 
+        <h3>Text Completion</h3>
         <div class="example">
-            <strong>Test Sentiment Analysis:</strong>
-            <pre>curl -X POST "http://localhost:8081/ai/sentiment" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "text": "I love this new feature!"
-     }'</pre>
+            <pre>curl -X POST "http://localhost:8081/ai/complete" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "The future of AI is",
+    "max_tokens": 50
+  }'</pre>
         </div>
 
+        <h3>Text Generation</h3>
         <div class="example">
-            <strong>Test Classification:</strong>
-            <pre>curl -X POST "http://localhost:8081/ai/classifications" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "text": "This is fantastic!",
-       "categories": ["positive", "negative", "neutral"]
-     }'</pre>
+            <pre>curl -X POST "http://localhost:8081/ai/generate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Once upon a time",
+    "max_tokens": 100,
+    "temperature": 0.8
+  }'</pre>
         </div>
-    </section>
 
-    <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e9ecef; text-align: center; color: #666;">
-        <p>📚 For interactive testing, visit the <a href="/swagger/">Swagger UI</a></p>
-        <p>🔧 AI Service API v1.0.0 - Powered by DistilGPT-2</p>
+        <h3>Health Check</h3>
+        <div class="example">
+            <pre>curl "http://localhost:8081/health"\</pre\>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🏗️ Architecture</h2>
+        <p>This service follows a microservices architecture pattern:</p>
+        <div class="example">
+            <pre>┌─────────────┐       ┌──────────────┐       ┌──────────────┐
+│   Clients   │──────▶│  AI Gateway  │──────▶│ LLM Backend  │
+│  (Public)   │       │  (Port 8081) │       │ (Port 8082)  │
+└─────────────┘       │   Go-based   │       │    Python    │
+                      │ Rate limiting│       │  DistilGPT-2 │
+                      │     CORS     │       │  IP restrict │
+                      └──────────────┘       └──────────────┘</pre>
+        </div>
+        <ul>
+            <li><strong>AI Gateway</strong>: Public-facing service with rate limiting, CORS, and security</li>
+            <li><strong>LLM Backend</strong>: Internal service running DistilGPT-2 model</li>
+            <li><strong>Communication</strong>: HTTP-based service-to-service calls</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Error Responses</h2>
+        <p>All endpoints return standardized error responses:</p>
+        <div class="example">
+            <pre>{
+  "error": "Rate limit exceeded",
+  "code": 429,
+  "message": "Too many requests. Please try again later."
+}</pre>
+        </div>
+        <p><strong>HTTP Status Codes:</strong></p>
+        <ul>
+            <li><code>200</code> - Success</li>
+            <li><code>400</code> - Bad Request (invalid input)</li>
+            <li><code>429</code> - Rate Limit Exceeded</li>
+            <li><code>500</code> - Internal Server Error</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🚀 Getting Started</h2>
+        <h3>Local Development</h3>
+        <div class="example">
+            <pre>git clone https://github.com/Ammar0144/ai.git
+cd ai
+go mod download
+go run main.go</pre>
+        </div>
+
+        <h3>Docker Deployment</h3>
+        <div class="example">
+            <pre>docker-compose up -d</pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📝 License</h2>
+        <p>This project is licensed under the MIT License.</p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 3rem; padding: 2rem; border-top: 1px solid #e9ecef; color: #666;">
+        <p>AI Service API v1.0.0 | <a href="https://github.com/Ammar0144/ai">GitHub</a> | <a href="/swagger/index.html">Swagger UI</a></p>
+        <p>Built with ❤️ for learning and experimentation</p>
     </footer>
 </body>
 </html>

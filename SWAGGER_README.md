@@ -51,13 +51,12 @@ Once the server is running (default port 8081), you can access:
 
 ### AI Processing Endpoints
 - `POST /ai/chat/completions` - Chat completion with conversation history
-- `POST /ai/embeddings` - Generate text embeddings
-- `POST /ai/classifications` - Classify text into categories
-- `POST /ai/summarization` - Summarize text content
-- `POST /ai/sentiment` - Analyze text sentiment
+- `POST /ai/complete` - Text completion from a prompt
+- `POST /ai/generate` - Advanced text generation with flexible parameters
 
-### Legacy Endpoints
-- `POST /api/message` - Simple message processing (legacy)
+### Information Endpoints
+- `GET /ai/model-info` - Get information about the AI model
+- `GET /` - Service information and available endpoints
 
 ## 🎯 Quick Test Examples
 
@@ -79,33 +78,32 @@ curl -X POST "http://localhost:8081/ai/chat/completions" \
      }'
 ```
 
-### Text Classification
+### Text Completion
 ```bash
-curl -X POST "http://localhost:8081/ai/classifications" \
+curl -X POST "http://localhost:8081/ai/complete" \
      -H "Content-Type: application/json" \
      -d '{
-       "text": "This product is absolutely amazing!",
-       "categories": ["positive", "negative", "neutral"]
+       "prompt": "The future of AI is",
+       "max_tokens": 50,
+       "temperature": 0.7
      }'
 ```
 
-### Sentiment Analysis
+### Text Generation
 ```bash
-curl -X POST "http://localhost:8081/ai/sentiment" \
+curl -X POST "http://localhost:8081/ai/generate" \
      -H "Content-Type: application/json" \
      -d '{
-       "text": "I love this new feature!"
+       "prompt": "Once upon a time",
+       "max_length": 100,
+       "temperature": 0.8,
+       "top_p": 0.9
      }'
 ```
 
-### Text Summarization
+### Model Information
 ```bash
-curl -X POST "http://localhost:8081/ai/summarization" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "text": "Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of intelligent agents...",
-       "max_length": 100
-     }'
+curl http://localhost:8081/ai/model-info
 ```
 
 ## 🔄 Regenerating Documentation
@@ -121,19 +119,19 @@ swag init
 The API uses Swagger annotations in the handler functions. Example:
 
 ```go
-// HandleMessage processes incoming messages and returns AI responses
+// HandleComplete processes text completion requests
 //
-//	@Summary		Process a message
-//	@Description	Send a message to the AI and get a response
+//	@Summary		Complete text from prompt
+//	@Description	Generate text completion from a given prompt
 //	@Tags			AI Processing
 //	@Accept			json
 //	@Produce		json
-//	@Param			request	body		models.MessageRequest	true	"Message request"
-//	@Success		200		{object}	models.MessageResponse	"Successful response"
+//	@Param			request	body		models.CompleteRequest	true	"Completion request"
+//	@Success		200		{object}	models.CompleteResponse	"Successful response"
 //	@Failure		400		{object}	models.ErrorResponse	"Bad request"
 //	@Failure		500		{object}	models.ErrorResponse	"Internal server error"
-//	@Router			/ai/message [post]
-func (h *AIHandler) HandleMessage(w http.ResponseWriter, r *http.Request) {
+//	@Router			/ai/complete [post]
+func (h *AIHandler) HandleComplete(w http.ResponseWriter, r *http.Request) {
     // Implementation...
 }
 ```

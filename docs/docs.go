@@ -9,65 +9,21 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "https://github.com/Ammar0144/ai",
+        "contact": {
+            "name": "API Support",
+            "url": "https://github.com/Ammar0144/ai/issues",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ai/ask": {
-            "post": {
-                "description": "Send a question to the AI and get a cleaned, intelligent response. Rate limited to 30 requests per minute per IP address.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Q\u0026A"
-                ],
-                "summary": "Ask a question",
-                "parameters": [
-                    {
-                        "description": "Question request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.QuestionRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Q\u0026A response",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "429": {
-                        "description": "Rate limit exceeded",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/ai/chat/completions": {
             "post": {
                 "description": "Generate a chat completion based on conversation history. Rate limited to 30 requests per minute per IP address.",
@@ -120,9 +76,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/ai/classifications": {
+        "/ai/complete": {
             "post": {
-                "description": "Classify text into predefined categories. Rate limited to 30 requests per minute per IP address.",
+                "description": "Complete text based on a given prompt. Rate limited to 30 requests per minute per IP address.",
                 "consumes": [
                     "application/json"
                 ],
@@ -132,23 +88,23 @@ const docTemplate = `{
                 "tags": [
                     "AI Processing"
                 ],
-                "summary": "Classify text",
+                "summary": "Text completion",
                 "parameters": [
                     {
-                        "description": "Classification request",
+                        "description": "Complete request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ClassificationRequest"
+                            "$ref": "#/definitions/models.CompleteRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful text classification",
+                        "description": "Successful text completion",
                         "schema": {
-                            "$ref": "#/definitions/models.ClassificationResponse"
+                            "$ref": "#/definitions/models.CompleteResponse"
                         }
                     },
                     "400": {
@@ -172,9 +128,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/ai/embeddings": {
+        "/ai/generate": {
             "post": {
-                "description": "Generate vector embeddings for the given text. Rate limited to 30 requests per minute per IP address.",
+                "description": "Generate text based on a given prompt. Rate limited to 30 requests per minute per IP address.",
                 "consumes": [
                     "application/json"
                 ],
@@ -184,75 +140,23 @@ const docTemplate = `{
                 "tags": [
                     "AI Processing"
                 ],
-                "summary": "Generate text embeddings",
+                "summary": "Text generation",
                 "parameters": [
                     {
-                        "description": "Embeddings request",
+                        "description": "Generate request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.EmbeddingsRequest"
+                            "$ref": "#/definitions/models.GenerateRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful embeddings generation",
+                        "description": "Successful text generation",
                         "schema": {
-                            "$ref": "#/definitions/models.EmbeddingsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "429": {
-                        "description": "Rate limit exceeded",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/ai/message": {
-            "post": {
-                "description": "Send a message to the AI and get a response. Rate limited to 30 requests per minute per IP address.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "AI Processing"
-                ],
-                "summary": "Process a message",
-                "parameters": [
-                    {
-                        "description": "Message request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.MessageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "schema": {
-                            "$ref": "#/definitions/models.MessageResponse"
+                            "$ref": "#/definitions/models.GenerateResponse"
                         }
                     },
                     "400": {
@@ -278,12 +182,12 @@ const docTemplate = `{
         },
         "/ai/model-info": {
             "get": {
-                "description": "Returns detailed information about the current AI model. Rate limited to 100 requests per minute per IP address.",
+                "description": "Get detailed information about the current AI model being used. Rate limited to 100 requests per minute per IP address.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Model Info"
+                    "System"
                 ],
                 "summary": "Get model information",
                 "responses": {
@@ -309,118 +213,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/ai/sentiment": {
-            "post": {
-                "description": "Analyze the sentiment of the provided text. Rate limited to 30 requests per minute per IP address.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "AI Processing"
-                ],
-                "summary": "Analyze sentiment",
-                "parameters": [
-                    {
-                        "description": "Sentiment request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SentimentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful sentiment analysis",
-                        "schema": {
-                            "$ref": "#/definitions/models.SentimentResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "429": {
-                        "description": "Rate limit exceeded",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/ai/summarization": {
-            "post": {
-                "description": "Generate a summary of the provided text. Rate limited to 30 requests per minute per IP address.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "AI Processing"
-                ],
-                "summary": "Summarize text",
-                "parameters": [
-                    {
-                        "description": "Summarization request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SummarizationRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful text summarization",
-                        "schema": {
-                            "$ref": "#/definitions/models.SummarizationResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "429": {
-                        "description": "Rate limit exceeded",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/health": {
             "get": {
-                "description": "Returns the health status of the AI service. Rate limited to 200 requests per minute per IP address.",
+                "description": "Check the health status of the AI service. Rate limited to 200 requests per minute per IP address.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Health"
+                    "System"
                 ],
                 "summary": "Health check",
                 "responses": {
@@ -489,52 +289,30 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ClassificationRequest": {
+        "models.CompleteRequest": {
             "type": "object",
             "properties": {
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "max_tokens": {
+                    "type": "integer"
                 },
-                "text": {
+                "prompt": {
                     "type": "string"
+                },
+                "temperature": {
+                    "type": "number"
                 },
                 "user_id": {
                     "type": "string"
                 }
             }
         },
-        "models.ClassificationResponse": {
+        "models.CompleteResponse": {
             "type": "object",
             "properties": {
-                "classification": {
+                "model": {
                     "type": "string"
                 },
-                "timestamp": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.EmbeddingsRequest": {
-            "type": "object",
-            "properties": {
-                "text": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.EmbeddingsResponse": {
-            "type": "object",
-            "properties": {
-                "embeddings": {
+                "response": {
                     "type": "string"
                 },
                 "timestamp": {
@@ -559,35 +337,24 @@ const docTemplate = `{
                 }
             }
         },
-        "models.HealthResponse": {
+        "models.GenerateRequest": {
             "type": "object",
             "properties": {
-                "status": {
+                "max_tokens": {
+                    "type": "integer"
+                },
+                "prompt": {
                     "type": "string"
                 },
-                "timestamp": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.MessageRequest": {
-            "type": "object",
-            "required": [
-                "message"
-            ],
-            "properties": {
-                "message": {
-                    "type": "string"
+                "temperature": {
+                    "type": "number"
                 },
                 "user_id": {
                     "type": "string"
                 }
             }
         },
-        "models.MessageResponse": {
+        "models.GenerateResponse": {
             "type": "object",
             "properties": {
                 "model": {
@@ -604,69 +371,16 @@ const docTemplate = `{
                 }
             }
         },
-        "models.QuestionRequest": {
-            "type": "object",
-            "required": [
-                "question"
-            ],
-            "properties": {
-                "question": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.SentimentRequest": {
+        "models.HealthResponse": {
             "type": "object",
             "properties": {
-                "text": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.SentimentResponse": {
-            "type": "object",
-            "properties": {
-                "sentiment": {
+                "status": {
                     "type": "string"
                 },
                 "timestamp": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.SummarizationRequest": {
-            "type": "object",
-            "properties": {
-                "max_length": {
-                    "type": "integer"
-                },
-                "text": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.SummarizationResponse": {
-            "type": "object",
-            "properties": {
-                "summary": {
-                    "type": "string"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "user_id": {
+                "version": {
                     "type": "string"
                 }
             }
@@ -676,12 +390,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0.0",
+	Host:             "localhost:8081",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "AI Service API",
+	Description:      "A comprehensive Go-based AI service providing various artificial intelligence capabilities with advanced rate limiting, CORS support, and robust error handling.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

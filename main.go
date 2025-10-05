@@ -1,5 +1,20 @@
 package main
 
+// @title AI Service API
+// @version 1.0.0
+// @description A comprehensive Go-based AI service providing various artificial intelligence capabilities with advanced rate limiting, CORS support, and robust error handling.
+// @termsOfService https://github.com/Ammar0144/ai
+
+// @contact.name API Support
+// @contact.url https://github.com/Ammar0144/ai/issues
+// @contact.email support@example.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8081
+// @BasePath /
+
 import (
 	"log"
 	"net/http"
@@ -216,23 +231,26 @@ func main() {
 
 	// Set up AI group routes with rate limiting and CORS
 	// AI endpoints: 30 requests per minute (resource intensive)
-	http.HandleFunc("/ai/message", protectedHandler(aiHandler.HandleMessage, 30))
 	http.HandleFunc("/ai/chat/completions", protectedHandler(aiHandler.HandleChatCompletion, 30))
-	http.HandleFunc("/ai/embeddings", protectedHandler(aiHandler.HandleEmbeddings, 30))
-	http.HandleFunc("/ai/classifications", protectedHandler(aiHandler.HandleClassification, 30))
-	http.HandleFunc("/ai/summarization", protectedHandler(aiHandler.HandleSummarization, 30))
-	http.HandleFunc("/ai/sentiment", protectedHandler(aiHandler.HandleSentiment, 30))
+	http.HandleFunc("/ai/complete", protectedHandler(aiHandler.HandleComplete, 30))
+	http.HandleFunc("/ai/generate", protectedHandler(aiHandler.HandleGenerate, 30))
 	http.HandleFunc("/ai/model-info", protectedHandler(aiHandler.HandleModelInfo, 100)) // Less intensive
-	http.HandleFunc("/ai/ask", protectedHandler(aiHandler.HandleAsk, 30))
-
-	// Legacy routes for backward compatibility
-	http.HandleFunc("/api/message", protectedHandler(aiHandler.HandleMessage, 30))
 
 	// Health endpoint: Higher limit for monitoring
 	http.HandleFunc("/health", protectedHandler(aiHandler.HandleHealth, 200))
 
-	// Swagger documentation
-	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
+	// Swagger JSON spec endpoint
+	http.HandleFunc("/swagger/doc.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "docs/swagger.json")
+	})
+
+	// Swagger documentation UI
+	http.HandleFunc("/swagger/", httpSwagger.Handler(
+		httpSwagger.URL("doc.json"), // Relative path to swagger spec
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("list"),
+		httpSwagger.DomID("swagger-ui"),
+	))
 
 	// API documentation page
 	http.HandleFunc("/docs", func(w http.ResponseWriter, r *http.Request) {
@@ -267,13 +285,9 @@ func main() {
 				"endpoints": {
 					"health": "/health",
 					"chat_completions": "/ai/chat/completions",
-					"embeddings": "/ai/embeddings",
-					"classifications": "/ai/classifications",
-					"summarization": "/ai/summarization",
-					"sentiment": "/ai/sentiment",
-					"model_info": "/ai/model-info",
-					"ask": "/ai/ask",
-					"legacy_message": "/api/message"
+					"complete": "/ai/complete",
+					"generate": "/ai/generate",
+					"model_info": "/ai/model-info"
 				}
 			}`))
 			return
@@ -305,13 +319,9 @@ func main() {
 	log.Printf("")
 	log.Printf("AI Endpoints available:")
 	log.Printf("  - Chat Completions: http://localhost:%s/ai/chat/completions", port)
-	log.Printf("  - Text Embeddings: http://localhost:%s/ai/embeddings", port)
-	log.Printf("  - Text Classification: http://localhost:%s/ai/classifications", port)
-	log.Printf("  - Text Summarization: http://localhost:%s/ai/summarization", port)
-	log.Printf("  - Sentiment Analysis: http://localhost:%s/ai/sentiment", port)
+	log.Printf("  - Text Completion: http://localhost:%s/ai/complete", port)
+	log.Printf("  - Text Generation: http://localhost:%s/ai/generate", port)
 	log.Printf("  - Model Information: http://localhost:%s/ai/model-info", port)
-	log.Printf("  - Enhanced Q&A: http://localhost:%s/ai/ask", port)
-	log.Printf("  - Legacy Message API: http://localhost:%s/api/message", port)
 
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Server failed to start:", err)

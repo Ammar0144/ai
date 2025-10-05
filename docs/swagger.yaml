@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   models.ChatCompletionRequest:
     properties:
@@ -30,36 +31,22 @@ definitions:
       role:
         type: string
     type: object
-  models.ClassificationRequest:
+  models.CompleteRequest:
     properties:
-      categories:
-        items:
-          type: string
-        type: array
-      text:
+      max_tokens:
+        type: integer
+      prompt:
         type: string
+      temperature:
+        type: number
       user_id:
         type: string
     type: object
-  models.ClassificationResponse:
+  models.CompleteResponse:
     properties:
-      classification:
+      model:
         type: string
-      timestamp:
-        type: string
-      user_id:
-        type: string
-    type: object
-  models.EmbeddingsRequest:
-    properties:
-      text:
-        type: string
-      user_id:
-        type: string
-    type: object
-  models.EmbeddingsResponse:
-    properties:
-      embeddings:
+      response:
         type: string
       timestamp:
         type: string
@@ -75,25 +62,18 @@ definitions:
       message:
         type: string
     type: object
-  models.HealthResponse:
+  models.GenerateRequest:
     properties:
-      status:
+      max_tokens:
+        type: integer
+      prompt:
         type: string
-      timestamp:
-        type: string
-      version:
-        type: string
-    type: object
-  models.MessageRequest:
-    properties:
-      message:
-        type: string
+      temperature:
+        type: number
       user_id:
         type: string
-    required:
-    - message
     type: object
-  models.MessageResponse:
+  models.GenerateResponse:
     properties:
       model:
         type: string
@@ -104,88 +84,30 @@ definitions:
       user_id:
         type: string
     type: object
-  models.QuestionRequest:
+  models.HealthResponse:
     properties:
-      question:
-        type: string
-      user_id:
-        type: string
-    required:
-    - question
-    type: object
-  models.SentimentRequest:
-    properties:
-      text:
-        type: string
-      user_id:
-        type: string
-    type: object
-  models.SentimentResponse:
-    properties:
-      sentiment:
+      status:
         type: string
       timestamp:
         type: string
-      user_id:
+      version:
         type: string
     type: object
-  models.SummarizationRequest:
-    properties:
-      max_length:
-        type: integer
-      text:
-        type: string
-      user_id:
-        type: string
-    type: object
-  models.SummarizationResponse:
-    properties:
-      summary:
-        type: string
-      timestamp:
-        type: string
-      user_id:
-        type: string
-    type: object
+host: localhost:8081
 info:
-  contact: {}
+  contact:
+    email: support@example.com
+    name: API Support
+    url: https://github.com/Ammar0144/ai/issues
+  description: A comprehensive Go-based AI service providing various artificial intelligence
+    capabilities with advanced rate limiting, CORS support, and robust error handling.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://github.com/Ammar0144/ai
+  title: AI Service API
+  version: 1.0.0
 paths:
-  /ai/ask:
-    post:
-      consumes:
-      - application/json
-      description: Send a question to the AI and get a cleaned, intelligent response.
-        Rate limited to 30 requests per minute per IP address.
-      parameters:
-      - description: Question request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.QuestionRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Q&A response
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "429":
-          description: Rate limit exceeded
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Ask a question
-      tags:
-      - Q&A
   /ai/chat/completions:
     post:
       consumes:
@@ -221,26 +143,26 @@ paths:
       summary: Chat completion
       tags:
       - AI Processing
-  /ai/classifications:
+  /ai/complete:
     post:
       consumes:
       - application/json
-      description: Classify text into predefined categories. Rate limited to 30 requests
+      description: Complete text based on a given prompt. Rate limited to 30 requests
         per minute per IP address.
       parameters:
-      - description: Classification request
+      - description: Complete request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.ClassificationRequest'
+          $ref: '#/definitions/models.CompleteRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Successful text classification
+          description: Successful text completion
           schema:
-            $ref: '#/definitions/models.ClassificationResponse'
+            $ref: '#/definitions/models.CompleteResponse'
         "400":
           description: Bad request
           schema:
@@ -253,29 +175,29 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Classify text
+      summary: Text completion
       tags:
       - AI Processing
-  /ai/embeddings:
+  /ai/generate:
     post:
       consumes:
       - application/json
-      description: Generate vector embeddings for the given text. Rate limited to
-        30 requests per minute per IP address.
+      description: Generate text based on a given prompt. Rate limited to 30 requests
+        per minute per IP address.
       parameters:
-      - description: Embeddings request
+      - description: Generate request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.EmbeddingsRequest'
+          $ref: '#/definitions/models.GenerateRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Successful embeddings generation
+          description: Successful text generation
           schema:
-            $ref: '#/definitions/models.EmbeddingsResponse'
+            $ref: '#/definitions/models.GenerateResponse'
         "400":
           description: Bad request
           schema:
@@ -288,48 +210,13 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Generate text embeddings
-      tags:
-      - AI Processing
-  /ai/message:
-    post:
-      consumes:
-      - application/json
-      description: Send a message to the AI and get a response. Rate limited to 30
-        requests per minute per IP address.
-      parameters:
-      - description: Message request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.MessageRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response
-          schema:
-            $ref: '#/definitions/models.MessageResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "429":
-          description: Rate limit exceeded
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Process a message
+      summary: Text generation
       tags:
       - AI Processing
   /ai/model-info:
     get:
-      description: Returns detailed information about the current AI model. Rate limited
-        to 100 requests per minute per IP address.
+      description: Get detailed information about the current AI model being used.
+        Rate limited to 100 requests per minute per IP address.
       produces:
       - application/json
       responses:
@@ -348,80 +235,10 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get model information
       tags:
-      - Model Info
-  /ai/sentiment:
-    post:
-      consumes:
-      - application/json
-      description: Analyze the sentiment of the provided text. Rate limited to 30
-        requests per minute per IP address.
-      parameters:
-      - description: Sentiment request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.SentimentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful sentiment analysis
-          schema:
-            $ref: '#/definitions/models.SentimentResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "429":
-          description: Rate limit exceeded
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Analyze sentiment
-      tags:
-      - AI Processing
-  /ai/summarization:
-    post:
-      consumes:
-      - application/json
-      description: Generate a summary of the provided text. Rate limited to 30 requests
-        per minute per IP address.
-      parameters:
-      - description: Summarization request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.SummarizationRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful text summarization
-          schema:
-            $ref: '#/definitions/models.SummarizationResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "429":
-          description: Rate limit exceeded
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Summarize text
-      tags:
-      - AI Processing
+      - System
   /health:
     get:
-      description: Returns the health status of the AI service. Rate limited to 200
+      description: Check the health status of the AI service. Rate limited to 200
         requests per minute per IP address.
       produces:
       - application/json
@@ -436,5 +253,5 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Health check
       tags:
-      - Health
+      - System
 swagger: "2.0"
